@@ -18,6 +18,33 @@
       update_cache: yes
     when: ansible_distribution == "CentOS"
 
+- hosts: all
+  become: true
+  tasks:
+
+  - name: create mishone user
+    tags: always
+    user:
+      name: mishone
+      groups: root
+
+  - name: add ssh key for mishone
+    tags: always
+    authorized_key:
+      user: mishone
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMMqOgybU9oF4OGxxdqSL4cy0V+HkW6ANvsMidx87nGg ansible"
+
+
+  - name: add sudoers file for simone
+    tags: always
+    copy:
+      src: sudoer_mishone
+      dest: /etc/sudoers.d/mishone
+      owner: root
+      group: root
+      mode: 0440
+
+
 - hosts: web_servers
   become: true
   tasks:
@@ -31,6 +58,14 @@
       state: latest
     when: ansible_distribution in ["Debian", "Ubuntu"]
 
+  - name: start apache2 (Debian/Ubuntu)
+    tags: apache,debian,ubuntu
+    service:
+      name: apache2
+      state: started
+      enabled: yes
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
   - name: install apache and php for CentOS servers
     tags: apache,CentOS
     apt:
@@ -38,6 +73,14 @@
         - httpd
         - php
       state: latest
+    when: ansible_distribution == "CentOS"
+  
+  - name: Start httpd (CentOs)
+    tags: apache,centos,httpd
+    service: 
+      name: httpd
+      state: started
+      enabled: yes
     when: ansible_distribution == "CentOS"
 
   - name: Copy file index.html to web servers
