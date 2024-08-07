@@ -5,12 +5,14 @@
   pre_tasks:
 
   - name: install updates (Debian, Ubuntu)
+    tags: always
     apt:
       upgrade: dist
       update_cache: yes
     when: ansible_distribution in ["Debian", "Ubuntu"]
 
   - name: install updates (CentOS)
+    tags: always
     dnf: 
       update_only: yes
       update_cache: yes
@@ -21,6 +23,7 @@
   tasks:
 
   - name: install apache and php for Debian\Ubuntu servers
+    tags: apache,apache2,Debian,Ubuntu
     apt:
       name:
         - apache2
@@ -29,6 +32,7 @@
     when: ansible_distribution in ["Debian", "Ubuntu"]
 
   - name: install apache and php for CentOS servers
+    tags: apache,CentOS
     apt:
       name:
         - httpd
@@ -41,6 +45,7 @@
   tasks:
 
   - name: install samba package
+    tags: samba
     package:
       name: samba
       state: latest
