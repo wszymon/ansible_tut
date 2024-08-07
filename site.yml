@@ -40,6 +40,15 @@
       state: latest
     when: ansible_distribution == "CentOS"
 
+  - name: Copy file index.html to web servers
+    tags: copy,index
+    copy:
+      src: index.html
+      dest: /var/www/html/index.html
+      owner: root 
+      group: root
+      mode: 0644
+
 - hosts: file_servers
   become: true
   tasks:
