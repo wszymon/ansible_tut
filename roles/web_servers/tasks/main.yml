@@ -1,0 +1,43 @@
+  - name: install apache and php for Debian\Ubuntu servers
+    tags: apache,apache2,Debian,Ubuntu
+    apt:
+      name:
+        - apache2
+        - libapache2-mod-php
+      state: latest
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+  - name: start apache2 (Debian/Ubuntu)
+    tags: apache,debian,ubuntu
+    service:
+      name: apache2
+      state: started
+      enabled: yes
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+  - name: install apache and php for CentOS servers
+    tags: apache,CentOS
+    apt:
+      name:
+        - httpd
+        - php
+      state: latest
+    when: ansible_distribution == "CentOS"
+  
+  - name: Start httpd (CentOs)
+    tags: apache,centos,httpd
+    service: 
+      name: httpd
+      state: started
+      enabled: yes
+    when: ansible_distribution == "CentOS"
+
+  - name: Copy file index.html to web servers
+    tags: copy,index
+    copy:
+      src: index.html
+      dest: /var/www/html/index.html
+      owner: root 
+      group: root
+      mode: 0644
+
